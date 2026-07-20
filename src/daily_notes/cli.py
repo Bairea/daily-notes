@@ -8,6 +8,7 @@ from daily_notes.commands.review import review
 from daily_notes.commands.list_cmd import list_cmd
 from daily_notes.commands.search import search
 from daily_notes.commands.ingest import ingest
+from daily_notes.commands.link import link
 
 
 @click.group()
@@ -23,3 +24,4 @@ main.add_command(review)
 main.add_command(list_cmd)
 main.add_command(search)
 main.add_command(ingest)
+main.add_command(link)

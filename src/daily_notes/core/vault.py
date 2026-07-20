@@ -59,7 +59,7 @@ def list_notes(vault: Path, year: int, month: int, note_type: str) -> list[NoteI
     if not search_dir or not search_dir.exists():
         return []
     notes = []
-    for md_file in sorted(search_dir.glob("*.md")):
+    for md_file in sorted(search_dir.rglob("*.md")):
         id_ = md_file.stem
         notes.append(NoteInfo(id_=id_, path=md_file, type=note_type))
     return notes

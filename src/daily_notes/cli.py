@@ -3,6 +3,7 @@
 import click
 from daily_notes import __version__
 from daily_notes.commands.setup import setup
+from daily_notes.commands.add import add
 
 
 @click.group()
@@ -13,3 +14,4 @@ def main():
 
 
 main.add_command(setup)
+main.add_command(add)

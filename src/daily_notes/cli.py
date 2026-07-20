@@ -25,3 +25,32 @@ main.add_command(list_cmd)
 main.add_command(search)
 main.add_command(ingest)
 main.add_command(link)
+
+
+@click.command()
+@click.option("--vault", "vault_path", default=None)
+@click.pass_context
+def daily(ctx, vault_path):
+    """每日 review（关注 ingest）."""
+    ctx.invoke(review, period="day", focus=("ingest",), as_json=False, vault_path=vault_path)
+
+
+@click.command()
+@click.option("--vault", "vault_path", default=None)
+@click.pass_context
+def weekly(ctx, vault_path):
+    """每周 review（关注 link）."""
+    ctx.invoke(review, period="week", focus=("link",), as_json=False, vault_path=vault_path)
+
+
+@click.command()
+@click.option("--vault", "vault_path", default=None)
+@click.pass_context
+def monthly(ctx, vault_path):
+    """每月 review（关注 pattern）."""
+    ctx.invoke(review, period="month", focus=("link", "pattern"), as_json=False, vault_path=vault_path)
+
+
+main.add_command(daily)
+main.add_command(weekly)
+main.add_command(monthly)

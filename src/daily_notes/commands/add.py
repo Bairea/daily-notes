@@ -44,12 +44,11 @@ def add(content: str, url: str, source_type: str, title: str, summary: str,
         fm = create_source_frontmatter(
             id_=id_,
             source_type="fleeting",
-            content=content,
             tags=list(tag),
         )
         target_dir = fleeting_dir
 
-    text = serialize_note(fm)
+    text = serialize_note(fm, content if not url else "")
     file_path = target_dir / f"{id_}.md"
     file_path.write_text(text, encoding="utf-8")
     click.echo(str(file_path))

@@ -55,7 +55,7 @@ def _collect_candidates(vault, period: str) -> dict:
                 candidates["sources"].append({
                     "id": post["id"],
                     "type": "fleeting",
-                    "summary": post.get("content", ""),
+                    "summary": post.content.strip(),
                     "path": str(md_file.relative_to(vault)),
                 })
         atomic_dir = get_atomic_dir(month_dir)

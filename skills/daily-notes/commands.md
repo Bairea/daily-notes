@@ -1,5 +1,7 @@
 # CLI 命令详情
 
+本文件是命令参数参考手册。典型工作流程（识别意图 → 路由到命令）见 SKILL.md 的"意图路由"一节。
+
 ## add
 ```bash
 daily-notes add <content> [--url URL] [--type TYPE] [--title TITLE] [--tag TAG...]

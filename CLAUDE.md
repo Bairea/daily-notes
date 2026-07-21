@@ -28,14 +28,18 @@ daily-notes/
 │   ├── commands/
 │   │   ├── decorators.py             # Click 装饰器工厂（vault_option, json_output, ensure_init）
 │   │   ├── setup.py / add.py / ingest.py / review.py
-│   │   ├── list_cmd.py / search.py / link.py
-│   │   └── skills/                   # Claude Code Skill 文件
+│   │   └── list_cmd.py / search.py / link.py
 │   └── core/
 │       ├── config.py                 # 配置读写
 │       ├── vault.py                  # 文件路径管理
 │       ├── frontmatter.py            # front matter 解析/生成
 │       └── id.py                     # id 生成（YYYYMMDD-短哈希）
 └── tests/
+```
+
+```
+# 根目录
+daily-notes/            # Claude Code Skill（SKILL.md 入口，供 npx skills 安装）
 ```
 
 ## 代码规范

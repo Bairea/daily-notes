@@ -78,7 +78,11 @@ my-vault/
 将 skill 安装到 Claude Code：
 
 ```bash
-cp -r src/daily_notes/skills/daily-notes ~/.claude/skills/
+# 方式一：从本仓库复制
+cp -r daily-notes ~/.claude/skills/
+
+# 方式二：通过 npx skills 安装
+npx skills add <owner>/<repo> -s daily-notes
 ```
 
 然后在 Claude Code 中输入 `/daily-notes` 即可触发。

@@ -79,7 +79,7 @@ my-vault/
 
 ```bash
 # 方式一：从本仓库复制
-cp -r daily-notes ~/.claude/skills/
+cp -r skills/daily-notes ~/.claude/skills/
 
 # 方式二：通过 npx skills 安装
 npx skills add <owner>/<repo> -s daily-notes

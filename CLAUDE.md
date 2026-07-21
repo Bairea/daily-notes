@@ -39,7 +39,8 @@ daily-notes/
 
 ```
 # 根目录
-daily-notes/            # Claude Code Skill（SKILL.md 入口，供 npx skills 安装）
+skills/
+  └── daily-notes/      # Claude Code Skill（SKILL.md 入口，供 npx skills 安装）
 ```
 
 ## 代码规范

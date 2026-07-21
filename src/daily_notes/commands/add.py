@@ -15,14 +15,16 @@ from daily_notes.core.frontmatter import (
 @click.option("--type", "source_type", default="article", help="来源类型")
 @click.option("--title", default="", help="标题")
 @click.option("--summary", default="", help="小结")
+@click.option("--body", default="", help="正文全文（cited source 的原文摘录）")
 @click.option("--tag", multiple=True, help="标签（可重复）")
 @vault_option()
 @ensure_init()
 def add(content: str, url: str, source_type: str, title: str, summary: str,
-        tag: tuple[str, ...], vault):
+        body: str, tag: tuple[str, ...], vault):
     """添加一条 Source 笔记.
 
     CONTENT 是内容描述（小结或空想内容）。
+    有 --url 时为 cited source，可通过 --body 保存原文全文。
     """
     id_ = generate_date_id()
     month_dir = get_current_month_dir(vault)
@@ -39,6 +41,7 @@ def add(content: str, url: str, source_type: str, title: str, summary: str,
             summary=summary or content,
         )
         target_dir = cited_dir
+        body_content = body
     else:
         # fleeting source
         fm = create_source_frontmatter(
@@ -47,8 +50,9 @@ def add(content: str, url: str, source_type: str, title: str, summary: str,
             tags=list(tag),
         )
         target_dir = fleeting_dir
+        body_content = content
 
-    text = serialize_note(fm, content if not url else "")
+    text = serialize_note(fm, body_content)
     file_path = target_dir / f"{id_}.md"
     file_path.write_text(text, encoding="utf-8")
     click.echo(str(file_path))

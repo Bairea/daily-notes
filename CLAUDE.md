@@ -41,6 +41,8 @@ daily-notes/
 # 根目录
 skills/
   └── daily-notes/      # Claude Code Skill（SKILL.md 入口，供 npx skills 安装）
+.agents/skills/
+  └── daily-notes/      # 项目级 skill 安装位置，供 pi 等 agent 自动发现
 ```
 
 ## 代码规范
@@ -64,6 +66,7 @@ skills/
 - `source_type`: article / video / github / paper / fleeting
 - `url`（cited 专有）
 - `title` / `summary`（cited 专有）
+- `body`（cited source 的原文摘录全文，通过 `add --body` 写入 markdown 正文）
 - `content`（fleeting 存入 body，避免与 frontmatter.Post.content 冲突）
 
 ### Atomic 特有字段

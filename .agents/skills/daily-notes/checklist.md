@@ -26,12 +26,9 @@ uv pip install git+https://github.com/Bairea/daily-notes.git
 检查当前目录（或用户指定的 `--vault` 路径）下是否存在 `.daily-notes/config.yaml`。
 
 - **已初始化** → 告诉用户 vault 位置，建议下一步（如 `daily-notes daily` 查看今日候选项），继续执行用户任务
-- **未初始化** → 不要直接在当前目录初始化。先判断当前目录是否是 daily-notes 源码目录（含 `src/daily_notes` 和 `pyproject.toml`）：
-  - **是源码目录** → 必须问用户 vault 路径，用 `daily-notes setup --vault <用户指定路径>` 初始化。绝对不要在源码目录里创建 vault
-  - **不是源码目录** → 问用户："当前目录是 <path>，要在这里初始化知识库吗？还是指定其他路径？"，按用户回答执行
+- **未初始化** → 运行 `daily-notes setup [--vault <path>]`（幂等，重复运行安全），然后告诉用户已就绪，建议下一步
 
 ## 3. 注意事项
 
-- vault 路径必须由用户明确确认，不要自行假设
-- 如果用户从未指定 `--vault`，且当前目录看起来像项目源码目录（非笔记库），一定要先问用户 vault 在哪里
+- 如果用户从未指定 `--vault`，默认使用当前工作目录
 - 不要假设 vault 路径，不确定时问用户

@@ -65,6 +65,17 @@ def test_add_with_content_date(tmp_vault):
     assert "202608" in result.output
 
 
+def test_add_invalid_date(tmp_vault):
+    save_config(tmp_vault, Config(vault_path=str(tmp_vault)))
+    runner = CliRunner()
+    result = runner.invoke(main, [
+        "add", "test", "--url", "https://example.com",
+        "--date", "not-a-date", "--vault", str(tmp_vault),
+    ])
+    assert result.exit_code != 0
+    assert "YYYY-MM-DD" in result.output
+
+
 def test_add_requires_init(tmp_path):
     runner = CliRunner()
     result = runner.invoke(main, ["add", "test", "--vault", str(tmp_path)])

@@ -42,7 +42,11 @@ def ingest(source: str, content: str, title: str, content_date: str,
 
     dt = None
     if content_date:
-        dt = datetime.strptime(content_date, "%Y-%m-%d")
+        try:
+            dt = datetime.strptime(content_date, "%Y-%m-%d")
+        except ValueError:
+            click.echo("错误：日期格式无效，应为 YYYY-MM-DD", err=True)
+            raise SystemExit(1)
     id_ = generate_date_id(dt)
     month_dir = get_current_month_dir(vault, dt)
     atomic_dir = get_atomic_dir(month_dir)

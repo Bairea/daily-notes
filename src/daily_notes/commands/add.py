@@ -32,7 +32,11 @@ def add(content: str, url: str, source_type: str, title: str, summary: str,
     """
     dt = None
     if content_date:
-        dt = datetime.strptime(content_date, "%Y-%m-%d")
+        try:
+            dt = datetime.strptime(content_date, "%Y-%m-%d")
+        except ValueError:
+            click.echo("错误：日期格式无效，应为 YYYY-MM-DD", err=True)
+            raise SystemExit(1)
     id_ = generate_date_id(dt)
     month_dir = get_current_month_dir(vault, dt)
     cited_dir, fleeting_dir = get_source_dir(month_dir)

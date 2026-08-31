@@ -1,8 +1,10 @@
 """list 子命令."""
 import json
 import click
+import frontmatter
 from daily_notes.commands.decorators import vault_option, json_output, ensure_init
 from daily_notes.core.vault import list_notes, list_all_months
+from daily_notes.core.id import parse_id
 
 
 @click.command("list")
@@ -20,6 +22,18 @@ def list_cmd(note_type: str, tag: str | None, since: str | None,
     items = []
     for year, month in months:
         for note in list_notes(vault, year, month, note_type):
+            post = frontmatter.loads(note.path.read_text(encoding="utf-8"))
+            note_tags = post.get("tags", [])
+            if tag and tag not in note_tags:
+                continue
+            if since:
+                try:
+                    note_date = parse_id(note.id_)
+                    since_date_str = since.replace("-", "")
+                    if note.id_[:8] < since_date_str:
+                        continue
+                except Exception:
+                    pass
             items.append({
                 "id": note.id_,
                 "type": note.type,

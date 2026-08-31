@@ -14,3 +14,7 @@ test-vault/
 .pytest_cache/
 .ruff_cache/
 docs/superpowers/
+node_modules/
+*.jpg
+*.jpeg
+*.png

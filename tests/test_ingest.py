@@ -27,6 +27,25 @@ def test_ingest_creates_atomic(tmp_vault):
     assert len(atomic_files) == 1
 
 
+def test_ingest_with_content_date(tmp_vault):
+    save_config(tmp_vault, Config(vault_path=str(tmp_vault)))
+    month_dir = get_current_month_dir(tmp_vault)
+    cited_dir, _ = get_source_dir(month_dir)
+    source_id = generate_date_id()
+    fm = create_source_frontmatter(id_=source_id, source_type="article", summary="test")
+    (cited_dir / f"{source_id}.md").write_text(serialize_note(fm), encoding="utf-8")
+
+    runner = CliRunner()
+    result = runner.invoke(main, [
+        "ingest", "--source", source_id,
+        "--content", "atomic content",
+        "--date", "2026-08-05",
+        "--vault", str(tmp_vault),
+    ])
+    assert result.exit_code == 0
+    assert "202608" in result.output
+
+
 def test_ingest_missing_source(tmp_vault):
     save_config(tmp_vault, Config(vault_path=str(tmp_vault)))
     runner = CliRunner()

@@ -25,3 +25,18 @@ def test_parse_id():
     dt = parse_id(id_)
     assert isinstance(dt, datetime)
     assert dt.year >= 2026
+
+
+def test_generate_id_with_date_obj():
+    """generate_date_id 接受 datetime 指定日期前缀."""
+    dt = datetime(2026, 8, 5)
+    id_ = generate_date_id(dt)
+    assert id_.startswith("20260805-")
+    parts = id_.split("-")
+    assert len(parts[1]) == 6
+
+
+def test_generate_id_with_date_str():
+    """generate_date_id 接受 YYYY-MM-DD 字符串."""
+    id_ = generate_date_id("2026-08-05")
+    assert id_.startswith("20260805-")

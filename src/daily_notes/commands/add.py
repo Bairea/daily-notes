@@ -1,4 +1,5 @@
 """add 子命令."""
+from datetime import datetime
 import click
 from daily_notes.commands.decorators import vault_option, ensure_init
 from daily_notes.core.vault import get_current_month_dir, get_source_dir
@@ -16,18 +17,24 @@ from daily_notes.core.frontmatter import (
 @click.option("--title", default="", help="标题")
 @click.option("--summary", default="", help="小结")
 @click.option("--body", default="", help="正文全文（cited source 的原文摘录）")
+@click.option("--date", "content_date", default=None,
+              help="内容日期(YYYY-MM-DD)，默认用操作日期")
 @click.option("--tag", multiple=True, help="标签（可重复）")
 @vault_option()
 @ensure_init()
 def add(content: str, url: str, source_type: str, title: str, summary: str,
-        body: str, tag: tuple[str, ...], vault):
+        body: str, content_date: str, tag: tuple[str, ...], vault):
     """添加一条 Source 笔记.
 
     CONTENT 是内容描述（小结或空想内容）。
     有 --url 时为 cited source，可通过 --body 保存原文全文。
+    --date 指定内容日期，笔记将存入该日期所在年月目录。
     """
-    id_ = generate_date_id()
-    month_dir = get_current_month_dir(vault)
+    dt = None
+    if content_date:
+        dt = datetime.strptime(content_date, "%Y-%m-%d")
+    id_ = generate_date_id(dt)
+    month_dir = get_current_month_dir(vault, dt)
     cited_dir, fleeting_dir = get_source_dir(month_dir)
 
     if url:

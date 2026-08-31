@@ -76,8 +76,11 @@ def list_all_months(vault: Path) -> list[tuple[int, int]]:
     return months
 
 
-def get_current_month_dir(vault: Path) -> Path:
-    """获取当前年月的目录，不存在则创建."""
-    now = datetime.now()
+def get_current_month_dir(vault: Path, dt=None) -> Path:
+    """获取当前(或指定)年月的目录，不存在则创建.
+
+    dt 为 None 时用当前时间；传入 datetime 时用该日期所在年月。
+    """
+    now = dt or datetime.now()
     ensure_month_dirs(vault, now.year, now.month)
     return get_month_dir(vault, now.year, now.month)

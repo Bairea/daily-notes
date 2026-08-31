@@ -1,4 +1,5 @@
 """ingest 子命令."""
+from datetime import datetime
 import click
 from daily_notes.commands.decorators import vault_option, ensure_init
 from daily_notes.core.vault import (
@@ -23,18 +24,27 @@ def _find_note_by_id(vault, id_: str):
 @click.option("--source", required=True, help="Source 笔记 id")
 @click.option("--content", default="", help="Atomic 正文内容")
 @click.option("--title", default="", help="Atomic 标题")
+@click.option("--date", "content_date", default=None,
+              help="内容日期(YYYY-MM-DD)，默认用操作日期")
 @click.option("--tag", multiple=True, help="标签")
 @vault_option()
 @ensure_init()
-def ingest(source: str, content: str, title: str, tag: tuple[str, ...], vault):
-    """从 Source 创建 Atomic Note."""
+def ingest(source: str, content: str, title: str, content_date: str,
+           tag: tuple[str, ...], vault):
+    """从 Source 创建 Atomic Note.
+
+    --date 指定内容日期，atomic note 将存入该日期所在年月目录。
+    """
     source_path = _find_note_by_id(vault, source)
     if not source_path:
         click.echo(f"错误：未找到 Source '{source}'。", err=True)
         raise SystemExit(1)
 
-    id_ = generate_date_id()
-    month_dir = get_current_month_dir(vault)
+    dt = None
+    if content_date:
+        dt = datetime.strptime(content_date, "%Y-%m-%d")
+    id_ = generate_date_id(dt)
+    month_dir = get_current_month_dir(vault, dt)
     atomic_dir = get_atomic_dir(month_dir)
 
     fm = create_atomic_frontmatter(

@@ -69,3 +69,17 @@ def test_list_filter_by_since(tmp_vault):
     assert result.exit_code == 0
     assert id_aug in result.output
     assert id_july not in result.output
+
+
+def test_list_no_review_choice(tmp_vault, notes):
+    """--type review 已随 Review Note 模型一并删除."""
+    notes.setup(tmp_vault)
+    result = notes.run("list", "--type", "review", vault=tmp_vault)
+    assert result.exit_code != 0
+
+
+def test_list_output_includes_title(tmp_vault, notes):
+    notes.setup(tmp_vault)
+    notes.add_source(tmp_vault, "异步深析")
+    result = notes.run_ok("list", vault=tmp_vault)
+    assert "异步深析" in result.output

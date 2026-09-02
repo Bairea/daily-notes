@@ -6,7 +6,9 @@ from click.testing import CliRunner
 
 from daily_notes.cli import main
 
-NOTE_ID_PATTERN = re.compile(r"(\d{8}-[0-9a-f]{6})")
+# 只匹配文件路径里的 id（结尾带 .md）。ingest 对同一 source 二次引用时会先打印
+# 警告并带上已有 atomic 的裸 id，必须锚定 .md 才能避免误抓警告里的 id。
+NOTE_ID_PATTERN = re.compile(r"(\d{8}-[0-9a-f]{6})\.md")
 
 
 @pytest.fixture

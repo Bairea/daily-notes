@@ -41,16 +41,16 @@ daily-notes monthly --vault ./my-vault
 | 命令 | 说明 |
 |------|------|
 | `setup [--vault PATH]` | 初始化知识库配置和目录结构 |
-| `add CONTENT [--url URL] [--type TYPE] [--title TITLE] [--body BODY] [--tag TAG...]` | 添加 Source |
-| `ingest --source ID [--content TEXT] [--title TITLE] [--tag TAG...]` | 从 Source 创建 Atomic Note |
+| `add CONTENT [--url URL] [--type TYPE] [--title TITLE] [--summary TEXT] [--body TEXT] [--date YYYY-MM-DD] [--tag TAG...]` | 添加 Source（`--body` 经 `-` 支持 stdin） |
+| `ingest --source ID [--content TEXT] [--title TITLE] [--date YYYY-MM-DD] [--tag TAG...]` | 从 Source 创建 Atomic Note（`--content` 经 `-` 支持 stdin） |
 | `daily [--json]` | 列出待消化的 Source（尚未产出 Atomic） |
 | `weekly [--json]` | 列出待连接的 Atomic（尚无出链） |
 | `monthly [--json]` | 按标签聚类展示 Atomic，并内嵌待连接队列 |
 | `stale [--json]` | 列出所有过期内容（status: stale），复核入口 |
 | `show ID [--json]` | 查看单条笔记全部字段与正文 |
-| `mark ID <stale\|archived\|active> [--note TEXT]` | 标记过期 / 归档 / 恢复活跃 |
-| `list [--type TYPE] [--tag TAG] [--json]` | 列出笔记 |
-| `search QUERY [--json]` | 搜索笔记（标题/标签/内容） |
+| `mark ID <stale\|archived\|active> [--note TEXT]` | 标记过期（`--note` 写入 stale_note）/ 归档 / 恢复活跃 |
+| `list [--type source\|atomic] [--tag TAG] [--since YYYY-MM-DD] [--json]` | 列出笔记 |
+| `search [QUERY] [--tag TAG] [--json]` | 搜索笔记（标题/标签/内容） |
 | `link SOURCE_ID TARGET_ID REASON` | 建立双向链接 |
 
 ## 知识库结构

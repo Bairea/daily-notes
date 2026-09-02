@@ -36,7 +36,9 @@ daily-notes/
 │       ├── config.py                 # 配置读写
 │       ├── vault.py                  # 文件路径管理
 │       ├── frontmatter.py            # front matter 解析/生成
-│       └── id.py                     # id 生成（YYYYMMDD-短哈希）
+│       ├── id.py                     # id 生成（YYYYMMDD-短哈希）
+│       ├── notes.py                  # 共享查询层：iter_notes / find_note / collect_source_refs / NoteRef
+│       └── input.py                  # stdin 输入解析（resolve_text，支持 "-" 读标准输入）
 └── tests/
 ```
 
@@ -57,7 +59,7 @@ skills/
 
 1. **装饰器工厂**：所有需要 `--vault` 选项和 init 检查的命令，必须使用 `commands/decorators.py` 中的 `@vault_option()`、`@ensure_init()`、`@json_output()`，不重复写样板代码
 2. **装饰器顺序**：`@click.option(...)` → `@vault_option()` → `@ensure_init()` → `def cmd(vault):`
-3. **错误处理**：未初始化用 `raise SystemExit(1)` + 提示运行 `setup`；找不到资源用 `raise SystemExit(1)` + 提示可用项
+3. **错误处理**：未初始化用 `raise SystemExit(1)` + 提示运行 `setup`；找不到资源统一复用 `commands/show.py` 的 `echo_not_found()`（`raise SystemExit(1)` + 列出可用 id），不得在各命令内联重复相同逻辑（mark/ingest/link 均已复用）
 4. **文件编码**：统一 UTF-8
 5. **禁止 Emoji**：代码中不包含任何 Emoji 表情
 6. **id 格式**：`YYYYMMDD-<6位短哈希>`（`core/id.py` 的 `generate_date_id()`）
@@ -102,7 +104,8 @@ skills/
 - 使用 `uv run pytest` 运行
 - TDD：先写失败测试 → 运行确认失败 → 实现 → 运行确认通过
 - 测试文件命名 `test_<module>.py`
-- fixture `tmp_vault` 在 `tests/conftest.py` 中定义
+- fixture `tmp_vault`（临时知识库目录）与 `notes`（NotesHelper，封装命令调用并返回笔记 id）在 `tests/conftest.py` 中定义；断言失败场景用 `notes.run(...)` 直接拿 result
+- ⚠️ 从输出提取 id 必须用 conftest 的 `NOTE_ID_PATTERN`（锚定结尾 `.md`）：ingest 对已引用 source 会先打印含裸 id 的警告，不锚定会误抓警告里的旧 id
 
 ## 高频命令
 
@@ -115,7 +118,7 @@ CLI 只输出候选列表与结构化 I/O；判断由人（或 agent 会话）�
 ## 知识过期机制
 
 - 派生状态「已消化」由 `core/notes.py` 的 `collect_source_refs()` 实时计算（source 被任意 atomic 的 `sources` 引用即视为已消化），不落盘
-- `mark <id> <stale|archived|active> [--note TEXT]` 统一设置状态：`stale` 标记过期、`archived` 放弃一条 source、`active` 清除 `status` 与 `stale_note` 恢复活跃
+- `mark <id> <stale|archived|active> [--note TEXT]` 统一设置状态：`stale` 标记过期、`archived` 放弃一条 source、`active` 清除 `status` 与 `stale_note` 恢复活跃；`--note` 仅当 `state=stale` 时写入 `stale_note`（archived 不接受）
 - 过期笔记退出 `daily`/`weekly` 待办队列，但仍保留在 `monthly`/`list`/`search` 中（带 `[过期]` 标记），不会被遗忘
 - 判断「是否过期、是否恢复」由人（或 agent 会话）决定，CLI 不自动判定
 

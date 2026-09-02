@@ -52,22 +52,6 @@ def create_atomic_frontmatter(
     return fm
 
 
-def create_review_frontmatter(
-    id_: str,
-    period: str,
-    related_notes: list[str] | None = None,
-) -> frontmatter.Post:
-    """创建 Review Note 的 front matter."""
-    fm = frontmatter.Post("")
-    fm["id"] = id_
-    fm["type"] = "review"
-    fm["created"] = datetime.now().isoformat()
-    fm["period"] = period
-    if related_notes:
-        fm["related_notes"] = related_notes
-    return fm
-
-
 def serialize_note(post: frontmatter.Post, content: str = "") -> str:
     """将 Post 对象序列化为带 front matter 的 markdown 文本."""
     post.content = content

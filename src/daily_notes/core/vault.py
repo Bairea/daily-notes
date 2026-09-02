@@ -28,18 +28,12 @@ def get_atomic_dir(month_dir: Path) -> Path:
     return month_dir / "10-Atomic"
 
 
-def get_review_dir(month_dir: Path) -> Path:
-    """获取 Review 目录."""
-    return month_dir / "20-Review"
-
-
 def ensure_month_dirs(vault: Path, year: int, month: int) -> None:
     """确保年月的目录结构存在."""
     month_dir = get_month_dir(vault, year, month)
     cited, fleeting = get_source_dir(month_dir)
     atomic = get_atomic_dir(month_dir)
-    review = get_review_dir(month_dir)
-    for d in [cited, fleeting, atomic, review]:
+    for d in [cited, fleeting, atomic]:
         d.mkdir(parents=True, exist_ok=True)
 
 
@@ -53,7 +47,6 @@ def list_notes(vault: Path, year: int, month: int, note_type: str) -> list[NoteI
         "source_fleeting": month_dir / "00-Source" / "fleeting",
         "source": month_dir / "00-Source",
         "atomic": month_dir / "10-Atomic",
-        "review": month_dir / "20-Review",
     }
     search_dir = type_dir_map.get(note_type)
     if not search_dir or not search_dir.exists():

@@ -3,7 +3,6 @@ from daily_notes.core.vault import (
     get_month_dir,
     get_source_dir,
     get_atomic_dir,
-    get_review_dir,
     ensure_month_dirs,
     list_notes,
     NoteInfo,
@@ -31,19 +30,12 @@ def test_get_atomic_dir():
     assert get_atomic_dir(month_dir) == month_dir / "10-Atomic"
 
 
-def test_get_review_dir():
-    vault = Path("/tmp/vault")
-    month_dir = vault / "202607"
-    assert get_review_dir(month_dir) == month_dir / "20-Review"
-
-
 def test_ensure_month_dirs(tmp_path):
     ensure_month_dirs(tmp_path, 2026, 7)
     month_dir = tmp_path / "202607"
     assert (month_dir / "00-Source" / "cited").is_dir()
     assert (month_dir / "00-Source" / "fleeting").is_dir()
     assert (month_dir / "10-Atomic").is_dir()
-    assert (month_dir / "20-Review").is_dir()
 
 
 def test_list_notes_empty(tmp_path):

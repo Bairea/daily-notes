@@ -67,3 +67,26 @@ def test_ingest_content_from_stdin(tmp_vault, notes):
     from daily_notes.core.vault import get_current_month_dir, get_atomic_dir
     atomic = list(get_atomic_dir(get_current_month_dir(tmp_vault)).glob("*.md"))[0]
     assert "第一段。" in find_note(tmp_vault, atomic.stem).post.content
+
+
+def test_ingest_warns_on_already_referenced_source(tmp_vault, notes):
+    """不阻止重复 ingest（一对多是设计），但输出提示."""
+    notes.setup(tmp_vault)
+    src = notes.add_source(tmp_vault, "源材料")
+    notes.ingest(tmp_vault, src, title="甲")
+    result = notes.run("ingest", "--source", src, "--title", "乙",
+                       vault=tmp_vault)
+    assert result.exit_code == 0
+    assert "已被" in result.output
+    assert "甲" in result.output
+
+
+def test_ingest_still_creates_when_referenced(tmp_vault, notes):
+    """提示归提示，创建照常."""
+    notes.setup(tmp_vault)
+    src = notes.add_source(tmp_vault, "源材料")
+    notes.ingest(tmp_vault, src, title="甲")
+    notes.ingest(tmp_vault, src, title="乙")
+    from daily_notes.core.vault import get_current_month_dir, get_atomic_dir
+    atomic_dir = get_atomic_dir(get_current_month_dir(tmp_vault))
+    assert len(list(atomic_dir.glob("*.md"))) == 2

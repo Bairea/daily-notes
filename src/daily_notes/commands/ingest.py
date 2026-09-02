@@ -3,22 +3,10 @@ from datetime import datetime
 import click
 from daily_notes.commands.decorators import vault_option, ensure_init
 from daily_notes.core.input import resolve_text
-from daily_notes.core.vault import (
-    get_current_month_dir, get_atomic_dir, list_all_months, get_month_dir,
-)
+from daily_notes.core.vault import get_current_month_dir, get_atomic_dir
 from daily_notes.core.id import generate_date_id
 from daily_notes.core.frontmatter import create_atomic_frontmatter, serialize_note
-
-
-def _find_note_by_id(vault, id_: str):
-    """在知识库中查找指定 id 的笔记."""
-    months = list_all_months(vault)
-    for year, month in months:
-        month_dir = get_month_dir(vault, year, month)
-        for md_file in month_dir.rglob("*.md"):
-            if md_file.stem == id_:
-                return md_file
-    return None
+from daily_notes.core.notes import find_note, collect_source_refs
 
 
 @click.command()
@@ -37,10 +25,18 @@ def ingest(source: str, content: str, title: str, content_date: str,
     --date 指定内容日期，atomic note 将存入该日期所在年月目录。
     """
     content = resolve_text(content, "content")
-    source_path = _find_note_by_id(vault, source)
-    if not source_path:
+    source_note = find_note(vault, source)
+    if not source_note:
         click.echo(f"错误：未找到 Source '{source}'。", err=True)
         raise SystemExit(1)
+
+    refs = collect_source_refs(vault)
+    if source in refs:
+        click.echo(
+            f"警告：该 source 已被 {len(refs[source])} 条 atomic 引用", err=True)
+        for atomic_id in refs[source]:
+            ref = find_note(vault, atomic_id)
+            click.echo(f"  - {atomic_id}  {ref.title if ref else ''}", err=True)
 
     dt = None
     if content_date:

@@ -27,8 +27,10 @@ daily-notes/
 │   ├── cli.py                        # Click group 入口
 │   ├── commands/
 │   │   ├── decorators.py             # Click 装饰器工厂（vault_option, json_output, ensure_init）
-│   │   ├── setup.py / add.py / ingest.py / review.py
-│   │   └── list_cmd.py / search.py / link.py
+│   │   ├── setup.py / add.py / ingest.py / link.py
+│   │   ├── daily.py / weekly.py / monthly.py / stale.py
+│   │   ├── show.py / mark.py
+│   │   └── list_cmd.py / search.py
 │   └── core/
 │       ├── config.py                 # 配置读写
 │       ├── vault.py                  # 文件路径管理
@@ -58,9 +60,13 @@ skills/
 
 ### Front Matter 通用字段
 - `id`: string（唯一标识）
-- `type`: source / atomic / review
+- `type`: source / atomic
 - `created`: datetime（ISO 8601）
 - `tags`: list[string]
+- `status`: 可选，active（缺省）/ stale（过期，待复核）/ archived（放弃消化，仅 source）
+- `stale_note`: `status: stale` 时的可选说明（为什么过期）
+
+> 派生状态「已消化」由 `core/notes.py` 的 `collect_source_refs()` 实时计算，不落盘：source 被任意 atomic 的 `sources` 引用即视为已消化。
 
 ### Source 特有字段
 - `source_type`: article / video / github / paper / fleeting

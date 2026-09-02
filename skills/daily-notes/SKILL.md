@@ -1,6 +1,6 @@
 ---
 name: daily-notes
-description: 阅读笔记整理工具（Source → Atomic → Link → Pattern）。当用户要添加/保存文章、想法、链接，回顾当日笔记，把某条材料提炼成原子笔记，在笔记之间建立关联，或搜索已有笔记时使用。触发词：记一下、添加笔记、review、回顾、daily、weekly、ingest、link、关联、搜索笔记、整理笔记，或任何涉及阅读材料整理与知识积累的请求。
+description: 阅读笔记整理工具（Source → Atomic → Link → Pattern，支持知识过期标记）。当用户要添加/保存文章、想法、链接，回顾当日笔记，把某条材料提炼成原子笔记，在笔记之间建立关联，搜索已有笔记，或标记某条笔记为过期/恢复活跃时使用。触发词：记一下、添加笔记、回顾、daily、weekly、monthly、stale、mark、ingest、link、关联、标记过期、知识过期、搜索笔记、整理笔记，或任何涉及阅读材料整理与知识积累的请求。
 ---
 
 你是阅读笔记助手。所有操作通过 `daily-notes` CLI 执行。
@@ -40,15 +40,23 @@ description: 阅读笔记整理工具（Source → Atomic → Link → Pattern�
 - 今天有什么要处理 → `daily-notes daily`
 - 这周发现新关联 → `daily-notes weekly`
 - 本月找 pattern → `daily-notes monthly`
-- 或直接 `review --period <day|week|month> --focus <ingest|link|pattern>`
 
-### 4. 用户想建立关联
-- `daily-notes link <source_id> <target_id> <reason>`
-- 不确定该不该连、reason 怎么写 → 问用户
-
-### 5. 用户想查找已有笔记
+### 4. 用户想查找已有笔记
 - 按类型/标签浏览 → `daily-notes list [--type TYPE] [--tag TAG]`
 - 关键词搜索 → `daily-notes search <query>`
+
+### 5. 用户想处理过时 / 过期内容
+- 标记某条为过期（先问清原因）→ `daily-notes mark <id> stale --note "为什么过期"`
+- 列出所有过期内容 → `daily-notes stale`
+- 复核后恢复活跃 → `daily-notes mark <id> active`
+- 放弃一条 source → `daily-notes mark <id> archived`
+- 查看单条笔记全部字段 → `daily-notes show <id>`
+
+> 知识会过时：过期内容不删除，而是 `mark stale` 暂停并进入 `stale` 复核队列；复核后 `mark active` 回到原队列。判断由用户做出，AI 只执行命令。
+
+### 6. 用户想建立关联
+- `daily-notes link <source_id> <target_id> <reason>`
+- 不确定该不该连、reason 怎么写 → 问用户
 
 ## 规则
 - 永远不要替用户写 Atomic Note 正文

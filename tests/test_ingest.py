@@ -56,6 +56,25 @@ def test_ingest_missing_source(tmp_vault):
     assert result.exit_code != 0
 
 
+def test_ingest_missing_source_lists_available(tmp_vault):
+    """未找到 source 时按 AGENTS.md 规则 3 列出可用 id."""
+    save_config(tmp_vault, Config(vault_path=str(tmp_vault)))
+    month_dir = get_current_month_dir(tmp_vault)
+    cited_dir, _ = get_source_dir(month_dir)
+    source_id = generate_date_id()
+    fm = create_source_frontmatter(id_=source_id, source_type="article", summary="test")
+    (cited_dir / f"{source_id}.md").write_text(serialize_note(fm), encoding="utf-8")
+
+    runner = CliRunner()
+    result = runner.invoke(main, [
+        "ingest", "--source", "nonexistent-id",
+        "--vault", str(tmp_vault),
+    ])
+    assert result.exit_code == 1
+    assert "可用的笔记 id" in result.output
+    assert source_id in result.output
+
+
 def test_ingest_content_from_stdin(tmp_vault, notes):
     notes.setup(tmp_vault)
     src = notes.add_source(tmp_vault, "源材料")

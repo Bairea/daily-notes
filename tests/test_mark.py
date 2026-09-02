@@ -45,6 +45,18 @@ def test_mark_archived_accepts_source(tmp_vault, notes):
     assert find_note(tmp_vault, note_id).post["status"] == "archived"
 
 
+def test_mark_archived_with_note_does_not_write_stale_note(tmp_vault, notes):
+    """--note 仅绑定 stale；archived + --note 不得产出 stale_note（spec §5.4）."""
+    notes.setup(tmp_vault)
+    note_id = notes.add_source(tmp_vault, "源材料")
+    result = notes.run("mark", note_id, "archived", "--note", "放弃",
+                       vault=tmp_vault)
+    assert result.exit_code == 0
+    note = find_note(tmp_vault, note_id)
+    assert note.post["status"] == "archived"
+    assert "stale_note" not in note.post
+
+
 def test_mark_idempotent(tmp_vault, notes):
     notes.setup(tmp_vault)
     note_id = notes.add_source(tmp_vault, "异步深析")

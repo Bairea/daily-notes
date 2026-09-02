@@ -1,6 +1,7 @@
 """link 子命令."""
 import click
 from daily_notes.commands.decorators import vault_option, ensure_init
+from daily_notes.commands.show import echo_not_found
 from daily_notes.core.notes import find_note
 
 
@@ -17,12 +18,12 @@ def link(source_id: str, target_id: str, reason: str, vault):
     """
     source_note = find_note(vault, source_id)
     if not source_note:
-        click.echo(f"错误：未找到笔记 '{source_id}'。", err=True)
+        echo_not_found(source_id, vault)
         raise SystemExit(1)
 
     target_note = find_note(vault, target_id)
     if not target_note:
-        click.echo(f"错误：未找到笔记 '{target_id}'。", err=True)
+        echo_not_found(target_id, vault)
         raise SystemExit(1)
 
     # 更新 source：添加出链

@@ -30,7 +30,8 @@ def mark(note_id: str, state: str, note_text: str, vault):
         click.echo(f"已恢复: {note_id} -> active")
     else:
         note.post["status"] = state
-        if note_text:
+        # --note 仅绑定 stale（spec §5.4）；archived 不接受 stale_note
+        if note_text and state == "stale":
             note.post["stale_note"] = note_text
         click.echo(f"已标记: {note_id} -> {state}")
 

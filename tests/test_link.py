@@ -43,3 +43,19 @@ def test_link_creates_bidirectional(tmp_vault):
         (atomic_dir / f"{target_id}.md").read_text(encoding="utf-8")
     )
     assert any(b["source"] == source_id for b in target_post.get("backlinks", []))
+
+
+def test_link_missing_note_lists_available(tmp_vault):
+    """未找到笔记时按 AGENTS.md 规则 3 列出可用 id."""
+    save_config(tmp_vault, Config(vault_path=str(tmp_vault)))
+    source_id = generate_date_id()
+    _create_atomic(tmp_vault, source_id, "Existing")
+
+    runner = CliRunner()
+    result = runner.invoke(main, [
+        "link", "missing-id", source_id, "关联",
+        "--vault", str(tmp_vault),
+    ])
+    assert result.exit_code == 1
+    assert "可用的笔记 id" in result.output
+    assert source_id in result.output

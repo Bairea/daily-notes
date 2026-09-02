@@ -7,6 +7,7 @@ from daily_notes.core.vault import get_current_month_dir, get_atomic_dir
 from daily_notes.core.id import generate_date_id
 from daily_notes.core.frontmatter import create_atomic_frontmatter, serialize_note
 from daily_notes.core.notes import find_note, collect_source_refs
+from daily_notes.commands.show import echo_not_found
 
 
 @click.command()
@@ -27,7 +28,7 @@ def ingest(source: str, content: str, title: str, content_date: str,
     content = resolve_text(content, "content")
     source_note = find_note(vault, source)
     if not source_note:
-        click.echo(f"错误：未找到 Source '{source}'。", err=True)
+        echo_not_found(source, vault)
         raise SystemExit(1)
 
     refs = collect_source_refs(vault)

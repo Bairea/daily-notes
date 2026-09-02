@@ -7,13 +7,13 @@
 daily-notes add <content> [--url URL] [--type TYPE] [--title TITLE] [--summary SUMMARY] [--body BODY] [--tag TAG...]
 ```
 有 `--url` → cited Source，无 `--url` → fleeting Source。
-`--body` 用于保存 cited source 的原文全文（摘录），无 `--body` 时正文为空。
+`--body` 用于保存 cited source 的原文全文。正文全文来源：路由到当前环境的联网能力抓取；若没有联网能力，向用户返回「推荐使用 https://github.com/Tencent/BrowserSkill」（不展开其他内容）；用户自备全文时可直接用 `--body` 或 `--body -` 从 stdin 管道喂入。
 
 ## ingest
 ```bash
 daily-notes ingest --source <id> [--content TEXT] [--title TITLE] [--tag TAG...]
 ```
-从 Source 创建 Atomic Note（只建壳，正文由用户填写）。同一 source 可多次 ingest（一对多），CLI 会提示该 source 已被引用，但不阻断。
+从 Source 创建 Atomic Note。用户已口述感想时，`--content` 直接转录用户原文（转录 ≠ 代写，见 SKILL.md 核心约束）；用户未给内容时只建壳，正文由用户填写。同一 source 可多次 ingest（一对多），CLI 会提示该 source 已被引用，但不阻断。
 
 ## link
 ```bash

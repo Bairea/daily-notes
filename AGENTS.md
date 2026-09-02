@@ -53,7 +53,7 @@ skills/
       └── iteration-1/
 ```
 
-> `.agents/skills/daily-notes/` 是项目级 skill 安装位置（已加入 `.gitignore`），供 pi 等 agent 自动发现。
+> `.agents/skills/daily-notes/` 是项目级 skill 安装位置（已加入 `.gitignore`），供 pi 等 agent 自动发现。**修改 `skills/daily-notes/` 源文件后必须同步副本**（`cp skills/daily-notes/*.md .agents/skills/daily-notes/`），否则 agent 实际加载的是旧版（2026-09-02 曾因此出现 review 旧路由残留）。
 
 ## 代码规范
 

@@ -11,6 +11,7 @@ from daily_notes.commands.ingest import ingest
 from daily_notes.commands.link import link
 from daily_notes.commands.show import show
 from daily_notes.commands.mark import mark
+from daily_notes.commands.daily import daily
 
 
 @click.group()
@@ -29,14 +30,7 @@ main.add_command(ingest)
 main.add_command(link)
 main.add_command(show)
 main.add_command(mark)
-
-
-@click.command()
-@click.option("--vault", "vault_path", default=None)
-@click.pass_context
-def daily(ctx, vault_path):
-    """每日 review（关注 ingest）."""
-    ctx.invoke(review, period="day", focus=("ingest",), as_json=False, vault_path=vault_path)
+main.add_command(daily)
 
 
 @click.command()
@@ -55,6 +49,5 @@ def monthly(ctx, vault_path):
     ctx.invoke(review, period="month", focus=("link", "pattern"), as_json=False, vault_path=vault_path)
 
 
-main.add_command(daily)
 main.add_command(weekly)
 main.add_command(monthly)

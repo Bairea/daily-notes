@@ -13,6 +13,7 @@ from daily_notes.commands.show import show
 from daily_notes.commands.mark import mark
 from daily_notes.commands.daily import daily
 from daily_notes.commands.weekly import weekly
+from daily_notes.commands.monthly import monthly
 
 
 @click.group()
@@ -33,14 +34,4 @@ main.add_command(show)
 main.add_command(mark)
 main.add_command(daily)
 main.add_command(weekly)
-
-
-@click.command()
-@click.option("--vault", "vault_path", default=None)
-@click.pass_context
-def monthly(ctx, vault_path):
-    """每月 review（关注 pattern）."""
-    ctx.invoke(review, period="month", focus=("link", "pattern"), as_json=False, vault_path=vault_path)
-
-
 main.add_command(monthly)

@@ -14,6 +14,7 @@ from daily_notes.commands.mark import mark
 from daily_notes.commands.daily import daily
 from daily_notes.commands.weekly import weekly
 from daily_notes.commands.monthly import monthly
+from daily_notes.commands.stale import stale
 
 
 @click.group()
@@ -35,3 +36,4 @@ main.add_command(mark)
 main.add_command(daily)
 main.add_command(weekly)
 main.add_command(monthly)
+main.add_command(stale)

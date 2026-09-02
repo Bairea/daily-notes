@@ -81,3 +81,29 @@ def test_add_requires_init(tmp_path):
     result = runner.invoke(main, ["add", "test", "--vault", str(tmp_path)])
     assert result.exit_code != 0
     assert "setup" in result.output.lower()
+
+
+def test_add_body_from_stdin(tmp_vault, notes):
+    notes.setup(tmp_vault)
+    result = notes.run(
+        "add", "小结", "--url", "https://example.com", "--title", "长文",
+        "--body", "-", vault=tmp_vault,
+        stdin="第一段：核心结论。\n\n第二段：包含「中文引号」。\n",
+    )
+    assert result.exit_code == 0
+    from daily_notes.core.notes import iter_notes
+    note = list(iter_notes(tmp_vault))[0]
+    assert "第一段：核心结论。" in note.post.content
+    assert "第二段：包含「中文引号」。" in note.post.content
+
+
+def test_add_body_dash_is_not_literal(tmp_vault, notes):
+    """'-' 是 stdin 标记，不应作为字面内容写入."""
+    notes.setup(tmp_vault)
+    notes.run_ok(
+        "add", "小结", "--url", "https://example.com", "--title", "长文",
+        "--body", "-", vault=tmp_vault, stdin="真实内容",
+    )
+    from daily_notes.core.notes import iter_notes
+    note = list(iter_notes(tmp_vault))[0]
+    assert note.post.content.strip() == "真实内容"

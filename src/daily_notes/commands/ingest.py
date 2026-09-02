@@ -2,6 +2,7 @@
 from datetime import datetime
 import click
 from daily_notes.commands.decorators import vault_option, ensure_init
+from daily_notes.core.input import resolve_text
 from daily_notes.core.vault import (
     get_current_month_dir, get_atomic_dir, list_all_months, get_month_dir,
 )
@@ -35,6 +36,7 @@ def ingest(source: str, content: str, title: str, content_date: str,
 
     --date 指定内容日期，atomic note 将存入该日期所在年月目录。
     """
+    content = resolve_text(content, "content")
     source_path = _find_note_by_id(vault, source)
     if not source_path:
         click.echo(f"错误：未找到 Source '{source}'。", err=True)

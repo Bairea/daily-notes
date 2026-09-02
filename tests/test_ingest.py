@@ -54,3 +54,16 @@ def test_ingest_missing_source(tmp_vault):
         "--vault", str(tmp_vault),
     ])
     assert result.exit_code != 0
+
+
+def test_ingest_content_from_stdin(tmp_vault, notes):
+    notes.setup(tmp_vault)
+    src = notes.add_source(tmp_vault, "源材料")
+    notes.run_ok(
+        "ingest", "--source", src, "--title", "原子",
+        "--content", "-", vault=tmp_vault, stdin="第一段。\n\n第二段。\n",
+    )
+    from daily_notes.core.notes import find_note
+    from daily_notes.core.vault import get_current_month_dir, get_atomic_dir
+    atomic = list(get_atomic_dir(get_current_month_dir(tmp_vault)).glob("*.md"))[0]
+    assert "第一段。" in find_note(tmp_vault, atomic.stem).post.content

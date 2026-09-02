@@ -45,3 +45,28 @@ def test_search_by_tag(tmp_vault):
     assert result.exit_code == 0
     assert id1 in result.output
     assert id2 not in result.output
+
+
+def test_search_matches_body(tmp_vault, notes):
+    """--body 存入的原文全文必须可被搜索（当前为 0 命中）."""
+    notes.setup(tmp_vault)
+    note_id = notes.add_source(tmp_vault, "异步深析",
+                               body="原文里有一个独一无二的词：紫水晶骑兵")
+    result = notes.run_ok("search", "紫水晶骑兵", vault=tmp_vault)
+    assert note_id in result.output
+
+
+def test_search_matches_fleeting_body(tmp_vault, notes):
+    """fleeting 的内容存在正文里，必须可被搜索."""
+    notes.setup(tmp_vault)
+    note_id = notes.add_fleeting(tmp_vault, "控制权的归属决定同步与异步")
+    result = notes.run_ok("search", "控制权", vault=tmp_vault)
+    assert note_id in result.output
+
+
+def test_search_output_includes_title(tmp_vault, notes):
+    """结果行须含标题：否则命中正文的 fleeting 只是一串看不出内容的 id."""
+    notes.setup(tmp_vault)
+    notes.add_source(tmp_vault, "异步深析")
+    result = notes.run_ok("search", "异步深析", vault=tmp_vault)
+    assert "异步深析" in result.output

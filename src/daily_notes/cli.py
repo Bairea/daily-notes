@@ -10,6 +10,7 @@ from daily_notes.commands.search import search
 from daily_notes.commands.ingest import ingest
 from daily_notes.commands.link import link
 from daily_notes.commands.show import show
+from daily_notes.commands.mark import mark
 
 
 @click.group()
@@ -27,6 +28,7 @@ main.add_command(search)
 main.add_command(ingest)
 main.add_command(link)
 main.add_command(show)
+main.add_command(mark)
 
 
 @click.command()
